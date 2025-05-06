@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: api-pulse-view
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    env: node
+    plan: free
+    branch: main
