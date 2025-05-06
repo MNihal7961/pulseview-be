@@ -8,9 +8,18 @@ import { MedicationsModule } from './medications/medications.module';
 import { User } from './auth/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
 	imports: [
+		JwtModule.registerAsync({
+			imports: [ConfigModule],
+			useFactory: (configService: ConfigService) => {
+				const secret = configService.get<string>('AUTH_SECRET');
+				return { secret };
+			},
+			inject: [ConfigService],
+		}),
 		TypeOrmModule.forRootAsync({
 			imports: [ConfigModule],
 			useFactory: (configService: ConfigService) => ({
