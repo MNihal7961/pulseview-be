@@ -9,6 +9,7 @@ import { User } from './auth/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { GoalsModule } from './goals/goals.module';
 
 @Module({
 	imports: [
@@ -38,6 +39,7 @@ import { JwtModule } from '@nestjs/jwt';
 		WeightEntriesModule,
 		ShipmentsModule,
 		MedicationsModule,
+		GoalsModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],
