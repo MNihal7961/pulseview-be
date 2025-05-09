@@ -12,7 +12,7 @@ export class MedicationsService {
 
 	constructor(
 		@InjectRepository(Medication)
-		private goalsRepository: Repository<Medication>,
+		private medicationsRepository: Repository<Medication>,
 	) {}
 
 	async create(createMedicationDto: CreateMedicationDto) {
@@ -29,7 +29,7 @@ export class MedicationsService {
 
 	async findAll(userId: string) {
 		try {
-			const goals = await this.goalsRepository.find({
+			const goals = await this.medicationsRepository.find({
 				where: { userId },
 			});
 
@@ -58,7 +58,7 @@ export class MedicationsService {
 					data: null,
 				};
 			}
-			const goal = await this.goalsRepository.findOne({
+			const goal = await this.medicationsRepository.findOne({
 				where: { _id: objectId },
 			});
 
@@ -95,7 +95,7 @@ export class MedicationsService {
 					data: null,
 				};
 			}
-			const goal = await this.goalsRepository.update(
+			const goal = await this.medicationsRepository.update(
 				objectId,
 				updateMedicationDto,
 			);
@@ -125,7 +125,7 @@ export class MedicationsService {
 					data: null,
 				};
 			}
-			const goal = await this.goalsRepository.delete(objectId);
+			const goal = await this.medicationsRepository.delete(objectId);
 
 			return {
 				success: true,
