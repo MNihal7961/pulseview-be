@@ -16,7 +16,23 @@ export class MedicationsService {
 	) {}
 
 	async create(createMedicationDto: CreateMedicationDto) {
+		const { dosage, endDate, startDate, timings, type, userId } =
+			createMedicationDto;
 		try {
+			const medication = new Medication();
+			medication.userId = userId;
+			medication.type = type;
+			medication.dosage = dosage;
+			medication.startDate = new Date(startDate);
+			medication.endDate = new Date(endDate);
+			medication.timings = timings;
+			await this.medicationsRepository.save(medication);
+
+			return {
+				success: true,
+				message: 'Goal created successfully',
+				data: medication,
+			};
 		} catch (error: any) {
 			this.logger.error('Error in creating new goal', error);
 			return {
