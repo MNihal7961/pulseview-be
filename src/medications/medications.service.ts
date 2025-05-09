@@ -1,26 +1,144 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateMedicationDto } from './dto/create-medication.dto';
 import { UpdateMedicationDto } from './dto/update-medication.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Medication } from './entities/medication.entity';
+import { Repository } from 'typeorm';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class MedicationsService {
-  create(createMedicationDto: CreateMedicationDto) {
-    return 'This action adds a new medication';
-  }
+	private readonly logger = new Logger(MedicationsService.name);
 
-  findAll() {
-    return `This action returns all medications`;
-  }
+	constructor(
+		@InjectRepository(Medication)
+		private goalsRepository: Repository<Medication>,
+	) {}
 
-  findOne(id: number) {
-    return `This action returns a #${id} medication`;
-  }
+	async create(createMedicationDto: CreateMedicationDto) {
+		try {
+		} catch (error: any) {
+			this.logger.error('Error in creating new goal', error);
+			return {
+				success: false,
+				message: error.message,
+				data: null,
+			};
+		}
+	}
 
-  update(id: number, updateMedicationDto: UpdateMedicationDto) {
-    return `This action updates a #${id} medication`;
-  }
+	async findAll(userId: string) {
+		try {
+			const goals = await this.goalsRepository.find({
+				where: { userId },
+			});
 
-  remove(id: number) {
-    return `This action removes a #${id} medication`;
-  }
+			return {
+				success: true,
+				message: 'Goals fetched successfully',
+				data: goals,
+			};
+		} catch (error: any) {
+			this.logger.error('Error in fetching goals', error);
+			return {
+				success: false,
+				message: error.message,
+				data: [],
+			};
+		}
+	}
+
+	async findOne(id: string) {
+		try {
+			const objectId = new ObjectId(id);
+			if (!objectId) {
+				return {
+					success: false,
+					message: 'Invalid goal id',
+					data: null,
+				};
+			}
+			const goal = await this.goalsRepository.findOne({
+				where: { _id: objectId },
+			});
+
+			if (!goal) {
+				return {
+					success: false,
+					message: 'Goal not found',
+					data: null,
+				};
+			}
+
+			return {
+				success: true,
+				message: 'Goal fetched successfully',
+				data: goal,
+			};
+		} catch (error: any) {
+			this.logger.error('Error in fetching goal', error);
+			return {
+				success: false,
+				message: error.message,
+				data: null,
+			};
+		}
+	}
+
+	async update(id: string, updateMedicationDto: UpdateMedicationDto) {
+		try {
+			const objectId = new ObjectId(id);
+			if (!objectId) {
+				return {
+					success: false,
+					message: 'Invalid goal id',
+					data: null,
+				};
+			}
+			const goal = await this.goalsRepository.update(
+				objectId,
+				updateMedicationDto,
+			);
+
+			return {
+				success: true,
+				message: 'Goal updated successfully',
+				data: goal,
+			};
+		} catch (error: any) {
+			this.logger.error('Error in updating goal', error);
+			return {
+				success: false,
+				message: error.message,
+				data: null,
+			};
+		}
+	}
+
+	async remove(id: string) {
+		try {
+			const objectId = new ObjectId(id);
+			if (!objectId) {
+				return {
+					success: false,
+					message: 'Invalid goal id',
+					data: null,
+				};
+			}
+			const goal = await this.goalsRepository.delete(objectId);
+
+			return {
+				success: true,
+				message: 'Goal deleted successfully',
+				data: goal,
+			};
+		} catch (error: any) {
+			this.logger.error('Error in deleting goal', error);
+			return {
+				success: false,
+				message: error.message,
+				data: null,
+			};
+		}
+	}
 }
