@@ -1,34 +1,46 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+	Controller,
+	Get,
+	Post,
+	Body,
+	Patch,
+	Param,
+	Delete,
+	Query,
+} from '@nestjs/common';
 import { MedicationsService } from './medications.service';
 import { CreateMedicationDto } from './dto/create-medication.dto';
 import { UpdateMedicationDto } from './dto/update-medication.dto';
 
 @Controller('medications')
 export class MedicationsController {
-  constructor(private readonly medicationsService: MedicationsService) {}
+	constructor(private readonly medicationsService: MedicationsService) {}
 
-  @Post()
-  create(@Body() createMedicationDto: CreateMedicationDto) {
-    return this.medicationsService.create(createMedicationDto);
-  }
+	@Post()
+	async create(@Body() createMedicationDto: CreateMedicationDto) {
+		return await this.medicationsService.create(createMedicationDto);
+	}
 
-  @Get()
-  findAll() {
-    return this.medicationsService.findAll();
-  }
+	@Get()
+	async findAll(@Query('userId') userId: string) {
+		return await this.medicationsService.findAll(userId);
+	}
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.medicationsService.findOne(+id);
-  }
+	@Get(':id')
+	async findOne(@Param('id') id: string) {
+		return await this.medicationsService.findOne(id);
+	}
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMedicationDto: UpdateMedicationDto) {
-    return this.medicationsService.update(+id, updateMedicationDto);
-  }
+	@Patch(':id')
+	async update(
+		@Param('id') id: string,
+		@Body() updateMedicationDto: UpdateMedicationDto,
+	) {
+		return await this.medicationsService.update(id, updateMedicationDto);
+	}
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.medicationsService.remove(+id);
-  }
+	@Delete(':id')
+	async remove(@Param('id') id: string) {
+		return await this.medicationsService.remove(id);
+	}
 }
