@@ -24,6 +24,14 @@ export class Medication {
 	dosage: string;
 
 	@Column()
+	timings: [
+		{
+			time: 'morning' | 'afternoon' | 'evening' | 'night';
+			intakeCondition: 'before-fasting' | 'after-fasting' | 'anytime';
+		},
+	];
+
+	@Column()
 	startDate: Date;
 
 	@Column()
