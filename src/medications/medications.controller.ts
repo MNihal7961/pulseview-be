@@ -60,8 +60,11 @@ export class MedicationsController {
 	}
 
 	@Get('/logs')
-	async findAllMedicationLogs(@Query('medicationId') medicationId: string) {
-		return await this.medicationLogsService.findAll(medicationId);
+	async findAllMedicationLogs(
+		@Query('medicationId') medicationId: string,
+		@Query('userId') userId: string,
+	) {
+		return await this.medicationLogsService.findAll(medicationId, userId);
 	}
 
 	@Get('/logs/:id')

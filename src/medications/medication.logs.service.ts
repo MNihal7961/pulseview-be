@@ -42,16 +42,29 @@ export class MedicationLogsService {
 		}
 	}
 
-	async findAll(medicationId: string) {
+	async findAll(medicationId: string, userId: string) {
 		try {
-			const medicationLogs = await this.medicationsLogsRepository.find({
-				where: { medicationId },
-			});
-			return {
-				success: true,
-				message: 'Medication logs fetched successfully',
-				data: medicationLogs,
-			};
+			if (medicationId) {
+				const medicationLogs = await this.medicationsLogsRepository.find({
+					where: { medicationId },
+				});
+				return {
+					success: true,
+					message: 'Medication logs fetched successfully',
+					data: medicationLogs,
+				};
+			}
+
+			if (userId) {
+				const medicationLogs = await this.medicationsLogsRepository.find({
+					where: { userId },
+				});
+				return {
+					success: true,
+					message: 'Medication logs fetched successfully',
+					data: medicationLogs,
+				};
+			}
 		} catch (error: any) {
 			this.logger.error('Error in fetching medication logs', error);
 			return {
