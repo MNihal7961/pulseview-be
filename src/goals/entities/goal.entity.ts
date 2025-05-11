@@ -8,8 +8,10 @@ import {
 	UpdateDateColumn,
 } from 'typeorm';
 
+export type GoalType = 'weight' | 'height';
+
 @Entity()
-export class Medication {
+export class Goal {
 	@ObjectIdColumn()
 	@Transform((params) => params.obj._id.toString())
 	_id: ObjectId;
@@ -18,24 +20,22 @@ export class Medication {
 	userId: string;
 
 	@Column()
-	type: string;
+	type: GoalType;
 
 	@Column()
-	dosage: string;
+	targetValue: number;
 
 	@Column()
-	timings: [
-		{
-			time: 'morning' | 'afternoon' | 'evening' | 'night';
-			intakeCondition: 'before-fasting' | 'after-fasting' | 'anytime';
-		},
-	];
+	unit: 'kg' | 'cm';
 
 	@Column()
 	startDate: Date;
 
 	@Column()
 	endDate: Date;
+
+	@Column()
+	status: 'active' | 'completed' | 'failed';
 
 	@CreateDateColumn()
 	createdAt: Date;

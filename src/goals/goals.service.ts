@@ -1,37 +1,47 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { CreateMedicationDto } from './dto/create-medication.dto';
-import { UpdateMedicationDto } from './dto/update-medication.dto';
+import { CreateGoalDto } from './dto/create-goal.dto';
+import { UpdateGoalDto } from './dto/update-goal.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Medication } from './entities/medication.entity';
+import { Goal } from './entities/goal.entity';
 import { Repository } from 'typeorm';
 import { ObjectId } from 'mongodb';
 
 @Injectable()
-export class MedicationsService {
-	private readonly logger = new Logger(MedicationsService.name);
+export class GoalsService {
+	private readonly logger = new Logger(GoalsService.name);
 
 	constructor(
-		@InjectRepository(Medication)
-		private medicationsRepository: Repository<Medication>,
+		@InjectRepository(Goal)
+		private goalsRepository: Repository<Goal>,
 	) {}
 
-	async create(createMedicationDto: CreateMedicationDto) {
-		const { dosage, endDate, startDate, timings, type, userId } =
-			createMedicationDto;
+	async create(createGoalDto: CreateGoalDto) {
+		const { endDate, startDate, targetValue, type, unit, userId } =
+			createGoalDto;
 		try {
-			const medication = new Medication();
-			medication.userId = userId;
-			medication.type = type;
-			medication.dosage = dosage;
-			medication.startDate = new Date(startDate);
-			medication.endDate = new Date(endDate);
-			medication.timings = timings;
-			await this.medicationsRepository.save(medication);
+			const goal = new Goal();
+			goal.userId = userId;
+			goal.type = type;
+			goal.targetValue = targetValue;
+			goal.unit = unit;
+			goal.startDate = new Date(startDate);
+			goal.endDate = new Date(endDate);
+			goal.status = 'active';
+
+			const newGoal = await this.goalsRepository.save(goal);
+
+			if (!newGoal) {
+				return {
+					success: false,
+					message: 'Failed to create new goal , please try again later',
+					data: null,
+				};
+			}
 
 			return {
 				success: true,
 				message: 'Goal created successfully',
-				data: medication,
+				data: newGoal,
 			};
 		} catch (error: any) {
 			this.logger.error('Error in creating new goal', error);
@@ -45,7 +55,7 @@ export class MedicationsService {
 
 	async findAll(userId: string) {
 		try {
-			const goals = await this.medicationsRepository.find({
+			const goals = await this.goalsRepository.find({
 				where: { userId },
 			});
 
@@ -74,25 +84,17 @@ export class MedicationsService {
 					data: null,
 				};
 			}
-			const goal = await this.medicationsRepository.findOne({
+			const goal = await this.goalsRepository.findOne({
 				where: { _id: objectId },
 			});
 
-			if (!goal) {
-				return {
-					success: false,
-					message: 'Goal not found',
-					data: null,
-				};
-			}
-
 			return {
 				success: true,
-				message: 'Goal fetched successfully',
+				message: 'Goal found',
 				data: goal,
 			};
 		} catch (error: any) {
-			this.logger.error('Error in fetching goal', error);
+			this.logger.error('Error in fetching goals', error);
 			return {
 				success: false,
 				message: error.message,
@@ -101,7 +103,7 @@ export class MedicationsService {
 		}
 	}
 
-	async update(id: string, updateMedicationDto: UpdateMedicationDto) {
+	async update(id: string, updateGoalDto: UpdateGoalDto) {
 		try {
 			const objectId = new ObjectId(id);
 			if (!objectId) {
@@ -111,10 +113,7 @@ export class MedicationsService {
 					data: null,
 				};
 			}
-			const goal = await this.medicationsRepository.update(
-				objectId,
-				updateMedicationDto,
-			);
+			const goal = await this.goalsRepository.update(objectId, updateGoalDto);
 
 			return {
 				success: true,
@@ -141,7 +140,14 @@ export class MedicationsService {
 					data: null,
 				};
 			}
-			const goal = await this.medicationsRepository.delete(objectId);
+			const goal = await this.goalsRepository.delete(objectId);
+			if (!goal) {
+				return {
+					success: false,
+					message: 'Goal not found',
+					data: null,
+				};
+			}
 
 			return {
 				success: true,
