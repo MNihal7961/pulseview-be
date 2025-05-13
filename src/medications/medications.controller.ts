@@ -59,12 +59,15 @@ export class MedicationsController {
 		return await this.medicationLogsService.create(createMedicationLogsDto);
 	}
 
-	@Get('/logs')
+	@Get('/logs/find')
 	async findAllMedicationLogs(
 		@Query('medicationId') medicationId: string,
 		@Query('userId') userId: string,
 	) {
-		return await this.medicationLogsService.findAll(medicationId, userId);
+		return await this.medicationLogsService.findAll(
+			medicationId || null,
+			userId || null,
+		);
 	}
 
 	@Get('/logs/:id')

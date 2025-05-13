@@ -55,7 +55,7 @@ export class MedicationsService {
 				data: goals,
 			};
 		} catch (error: any) {
-			this.logger.error('Error in fetching goals', error);
+			this.logger.error('Error in fetching medications', error);
 			return {
 				success: false,
 				message: error.message,
@@ -92,7 +92,7 @@ export class MedicationsService {
 				data: goal,
 			};
 		} catch (error: any) {
-			this.logger.error('Error in fetching goal', error);
+			this.logger.error('Error in fetching medication by id', error);
 			return {
 				success: false,
 				message: error.message,

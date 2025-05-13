@@ -2,12 +2,14 @@ import { Transform } from 'class-transformer';
 import {
 	Column,
 	CreateDateColumn,
+	Entity,
 	ObjectId,
 	ObjectIdColumn,
 	UpdateDateColumn,
 } from 'typeorm';
 
-export class MedicatonLogs {
+@Entity()
+export class MedicationLogs {
 	@ObjectIdColumn()
 	@Transform((params) => params.obj._id.toString())
 	_id: ObjectId;
@@ -19,16 +21,16 @@ export class MedicatonLogs {
 	medicationId: string;
 
 	@Column()
-	date: Date; // The day of the medication
+	date: Date;
 
 	@Column()
-	time: 'morning' | 'afternoon' | 'evening' | 'night'; // Which dose time
+	time: 'morning' | 'afternoon' | 'evening' | 'night';
 
 	@Column()
-	status: 'taken' | 'skipped'; // Action by patient
+	status: 'taken' | 'skipped';
 
 	@Column({ nullable: true })
-	notes?: string; // Optional reason or comment
+	notes?: string;
 
 	@Column()
 	timings: [
