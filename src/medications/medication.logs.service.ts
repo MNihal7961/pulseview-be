@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MedicatonLogs } from './entities/medication.logs.entity';
+import { MedicationLogs } from './entities/medication.logs.entity';
 import { Repository } from 'typeorm';
 import { CreateMedicationLogsDto } from './dto/create-medication-logs.dto';
 import { UpdateMedicationLogsDto } from './dto/update-medication-logs.dto';
@@ -11,15 +11,15 @@ export class MedicationLogsService {
 	private readonly logger = new Logger(MedicationLogsService.name);
 
 	constructor(
-		@InjectRepository(MedicatonLogs)
-		private medicationsLogsRepository: Repository<MedicatonLogs>,
+		@InjectRepository(MedicationLogs)
+		private medicationsLogsRepository: Repository<MedicationLogs>,
 	) {}
 
 	async create(createMedicationLogsDto: CreateMedicationLogsDto) {
 		const { date, medicationId, status, time, userId, notes } =
 			createMedicationLogsDto;
 		try {
-			const medicationLog = new MedicatonLogs();
+			const medicationLog = new MedicationLogs();
 			medicationLog.userId = userId;
 			medicationLog.medicationId = medicationId;
 			medicationLog.date = new Date(date);
@@ -42,7 +42,7 @@ export class MedicationLogsService {
 		}
 	}
 
-	async findAll(medicationId: string, userId: string) {
+	async findAll(medicationId: string | null, userId: string | null) {
 		try {
 			if (medicationId) {
 				const medicationLogs = await this.medicationsLogsRepository.find({
@@ -95,7 +95,7 @@ export class MedicationLogsService {
 				data: medicationLog,
 			};
 		} catch (error: any) {
-			this.logger.error('Error in fetching medication logs', error);
+			this.logger.error('Error in fetching medication logs by id', error);
 			return {
 				success: false,
 				message: error.message,
